@@ -1,0 +1,12 @@
+[Unit]
+Description=Aero 15x Agressive Fan Controller
+
+[Service]
+ExecStartPre=/sbin/modprobe ec_sys write_support=1
+ExecStart=/usr/bin/aero15x-fan
+ExecStop=/bin/kill -INT ${MAINPID}
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
+
