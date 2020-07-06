@@ -6,6 +6,7 @@
 #include <atomic>
 #include <chrono>
 #include <csignal>
+#include <cstdlib>
 #include <iostream>
 #include <thread>
 
@@ -59,11 +60,14 @@ auto main() -> int
     if (!aero15x::is_aero15x()) {
         aero15x::log::fatal("This product is not compatible, a Gigabyte Aero15x"
             " (P65Q) is required.");
-        ::exit(1);
+        std::exit(1);
     }
+
+    /*  Ordinarily I would have set upa compilation firewall between C/Linux and
+        C++ code, but I thought it overkill for these applications. */
     if (::getuid() != 0) {
         aero15x::log::fatal("You must be root to run this application");
-        ::exit(1);
+        std::exit(1);
     }
 
     aero15x::log::info("Aero 15x fan controller starting");
@@ -98,7 +102,11 @@ auto main() -> int
 
 	std::signal(SIGINT, signal_handler);  
 	std::signal(SIGTERM, signal_handler);
-	std::signal(SIGHUP, signal_handler);  /* When terminal is closed */
+
+    /*  If the daemon is run manually, intercepting SIGHUP allows the
+        application to terminate cleanly and turn off the custom fan speeds if
+        run in a terminal which is closed. */
+	std::signal(SIGHUP, signal_handler);  
     ec.set_fan0_custom_speed(detect.get_current_state().speed);
     ec.set_fan1_custom_speed(detect.get_current_state().speed);
     ec.set_enable_custom_speed(true);
@@ -108,13 +116,13 @@ auto main() -> int
     {
         std::this_thread::sleep_for(1s);
 
-        auto tmp = ec.read_cpu_temp();
-        auto cpu_temp = median.filter(static_cast<double>(tmp));
+        auto cpu_temp = ec.read_cpu_temp();
+        auto filtered_temp = median.filter(static_cast<double>(cpu_temp));
 
-        if (detect.change_needed(cpu_temp))
+        if (detect.change_needed(filtered_temp))
         {
             auto current_state = detect.get_current_state();
-            change_speed(cpu_temp, current_state);
+            change_speed(filtered_temp, current_state);
         }
     }
 
