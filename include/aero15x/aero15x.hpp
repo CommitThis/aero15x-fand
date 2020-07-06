@@ -41,8 +41,7 @@ public:
     auto write(std::size_t address, T const & t) -> void
     {
         m_file.seekp(address);
-        m_file.write(reinterpret_cast<char const*>(std::launder(&t)),
-            sizeof(t));
+        m_file.write(reinterpret_cast<char const*>(&t), sizeof(t));
     }
 
     template <typename T>
@@ -50,7 +49,7 @@ public:
     {
         T t{};
         m_file.seekg(address);
-        m_file.read(reinterpret_cast<char*>(std::launder(&t)), sizeof(t));
+        m_file.read(reinterpret_cast<char*>(&t), sizeof(t));
         return t;
     }
 
