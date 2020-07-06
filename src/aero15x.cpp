@@ -22,6 +22,7 @@ constexpr static auto address_fan0_custom_speed = 0xb0;
 constexpr static auto address_fan1_custom_speed = 0xb1;
 constexpr static auto address_enable_custom_speed = 0x06;
 
+static auto ec_sys_file = "/sys/kernel/debug/ec/ec0/io"s;
 static auto vendor_file = "/sys/devices/virtual/dmi/id/sys_vendor"s;
 static auto product_file = "/sys/devices/virtual/dmi/id/product_name"s;
 static auto required_vendor = "GIGABYTE"s;
@@ -50,9 +51,14 @@ auto aero15x::is_aero15x() -> bool
 }
 
 
-aero15x::ec_sys::ec_sys()
-    : m_file{"/sys/kernel/debug/ec/ec0/io"}
+aero15x::ec_sys::ec_sys(std::string const & file)
+    : m_file{file, std::ios::binary}
 {}
+
+aero15x::ec_sys::ec_sys()
+    : ec_sys{ec_sys_file}
+{}
+
 
 auto aero15x::ec_sys::set_fan0_custom_speed(std::uint8_t speed) -> void
 {
