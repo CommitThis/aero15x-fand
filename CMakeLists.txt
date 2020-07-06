@@ -1,4 +1,4 @@
-project(aero15x_fan)
+project(aero15x_fand)
 cmake_minimum_required(VERSION 3.5)
 
 add_subdirectory(bin)

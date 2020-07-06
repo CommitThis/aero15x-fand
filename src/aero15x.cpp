@@ -52,8 +52,15 @@ auto aero15x::is_aero15x() -> bool
 
 
 aero15x::ec_sys::ec_sys(std::string const & file)
-    : m_file{file, std::ios::binary}
-{}
+    : m_file{file}
+{
+    if (m_file.bad()) {
+        aero15x::log::error("File bad");
+    }
+    if (m_file.fail()) {
+        aero15x::log::error("File fail");
+    }
+}
 
 aero15x::ec_sys::ec_sys()
     : ec_sys{ec_sys_file}

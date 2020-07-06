@@ -2,8 +2,9 @@
 Description=Aero 15x Agressive Fan Controller
 
 [Service]
+ExecStartPre=-/sbin/modprobe -r ec_sys
 ExecStartPre=/sbin/modprobe ec_sys write_support=1
-ExecStart=/usr/bin/aero15x-fan
+ExecStart=/usr/bin/aero15x-fand
 ExecStop=/bin/kill -INT ${MAINPID}
 KillSignal=SIGINT
 
