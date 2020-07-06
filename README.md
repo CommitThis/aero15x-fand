@@ -1,9 +1,14 @@
-Gigabyte Aero 15x (v8) Fan Controller
-=====================================
+Fan Controller for Gigabyte Aero 15x (v8) 
+=========================================
+
+DISCLAIMER: This project is in no way affiliated with or endorsed by Gigabyte
+Technology.
+
 This provides a naive implementation of a fan controller for the Aero 15x 
 platform using the embedded controller system. Mostly because I wanted to write
-a `systemd` daemon and I was fed up with relying on the internal fan speed control
-with the laptop being quiet and then suddenly sounding like a jet engine.
+a `systemd` daemon and I was fed up with relying on the internal fan speed 
+control with the laptop being quiet and then suddenly sounding like a jet
+engine.
 
 First and foremost, I know very little of dealing with embedded devices, so
 please use at your own risk.
