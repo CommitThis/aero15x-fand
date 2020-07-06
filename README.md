@@ -111,4 +111,6 @@ so bad after all...
 
 Testing
 -------
-I did what I could.
+I did what I could. The median filter and change detector are somewhat tested,
+but arguably the `ec_sys` module is not. I can't currently think of a way of
+testing it while using `std::fstream` (can't be copied).
