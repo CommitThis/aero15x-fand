@@ -40,7 +40,6 @@ protected:
 
 
 
-
 volatile std::atomic<bool> shutdown = false;
 
 void signal_handler(int signal)
@@ -52,13 +51,13 @@ void signal_handler(int signal)
 auto main() -> int
 {
     using namespace std::chrono_literals;	
+    using namespace aero15x;
 
-    static auto custom_logger = journald_logger{aero15x::log::level::info};
-    aero15x::log::set_logger(&custom_logger);
-    aero15x::log::set_level(aero15x::log::level::debug);
+    log::make_and_set_logger<journald_logger>();
+    log::set_level(log::level::debug);
 
-    if (!aero15x::is_aero15x()) {
-        aero15x::log::fatal("This product is not compatible, a Gigabyte Aero15x"
+    if (!is_aero15x()) {
+        log::fatal("This product is not compatible, a Gigabyte Aero15x"
             " (P65Q) is required.");
         std::exit(1);
     }
@@ -66,14 +65,13 @@ auto main() -> int
     /*  Ordinarily I would have set upa compilation firewall between C/Linux and
         C++ code, but I thought it overkill for these applications. */
     if (::getuid() != 0) {
-        aero15x::log::fatal("You must be root to run this application");
+        log::fatal("You must be root to run this application");
         std::exit(1);
     }
 
-    aero15x::log::info("Aero 15x fan controller starting");
+    log::info("Aero 15x fan controller starting");
 
 
-    auto ec = aero15x::ec_sys{};
 
     /*  The reason why the filter has a window of three samples is to balance
         the removal of anomalous outliers, but still being able to respond
@@ -86,7 +84,9 @@ auto main() -> int
         state. If we didn't do this, the filter and the state would have to 
         converge on the correct solution, rather than in tandem.
     */
-	auto median = aero15x::median_filter<3>{{100, 100, 100}};
+	auto median = median_filter<3>{{100, 100, 100}};
+
+    auto ec = aero15x::ec_sys{};
     auto detect = aero15x::change_detector();
 	auto change_speed = [&detect, &ec](
 		auto cpu_temp,
@@ -100,21 +100,23 @@ auto main() -> int
         ec.set_fan1_custom_speed(detect.get_current_state().speed);
 	};
 
-	std::signal(SIGINT, signal_handler);  
-	std::signal(SIGTERM, signal_handler);
-
     /*  If the daemon is run manually, intercepting SIGHUP allows the
         application to terminate cleanly and turn off the custom fan speeds if
         run in a terminal which is closed. */
 	std::signal(SIGHUP, signal_handler);  
+	std::signal(SIGINT, signal_handler);  
+	std::signal(SIGTERM, signal_handler);
+
+
     ec.set_fan0_custom_speed(detect.get_current_state().speed);
     ec.set_fan1_custom_speed(detect.get_current_state().speed);
     ec.set_enable_custom_speed(true);
 
 
+
     while (!shutdown)
     {
-        std::this_thread::sleep_for(1s);
+       std::this_thread::sleep_for(1s);
 
         auto cpu_temp = ec.read_cpu_temp();
         auto filtered_temp = median.filter(static_cast<double>(cpu_temp));
