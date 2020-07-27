@@ -49,6 +49,7 @@ auto do_log(level message_level, std::string const & message) -> void;
 class logger
 {
 public:
+    logger();
     logger(level threshold);
     ~logger() = default;
     auto set_log_level(level level) -> void;
@@ -71,8 +72,6 @@ auto set_logger(logger* new_logger) -> void;
 auto set_level(level new_level) -> void;
 
 
-
-
 class stdout_logger final : public logger
 {
 public:
@@ -87,6 +86,12 @@ private:
 };
 
 
+template <typename T, typename ... Args>
+auto make_and_set_logger(Args && ... args)
+{
+    static auto logger = T{std::forward<Args>(args)...};
+    set_logger(&logger);
+}
 
 
 template <typename ... Args>
