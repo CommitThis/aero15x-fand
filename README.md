@@ -1,7 +1,9 @@
 Fan Controller for Gigabyte Aero 15x (v8) 
 =========================================
 
-DISCLAIMER: This project is in no way affiliated with or endorsed by Gigabyte
+Copyright © 2020 Commit This Limited
+
+This project is in no way affiliated with or endorsed by Gigabyte
 Technology.
 
 This provides a naive implementation of a fan controller for the Aero 15x 
@@ -73,8 +75,9 @@ I used a `std::array` to store the states, but I could have used a linked list.
 Although using an index into an array has an advantage, the whole instance can
 be copied without side-effects. If you were to use a pointer or
 `std::reference_wrapper` and the thing is copied, what should the pointer to the
-thing be? An index into a list could be also used but lookups are done in linear
-time (not that it matters for like 5 entries...).
+thing be? An index into a list could be also used but lookups are then done in
+linear time as opposed to constant time (not that it matters for like 5
+entries...).
 
 The initial state is max; this will eventually settle to the correct state. It
 is better to take a cautious approach when starting; if the system is already
@@ -107,10 +110,3 @@ As an additional note, this may not be liked because of it's reliance on
 globals. While the default logger static variable could be factored out, there
 would still be a global `std::atomic` holder. Maybe `instance.log(...)` is not
 so bad after all...
-
-
-Testing
--------
-I did what I could. The median filter and change detector are somewhat tested,
-but arguably the `ec_sys` module is not. I can't currently think of a way of
-testing it while using `std::fstream` (can't be copied).
