@@ -26,9 +26,9 @@ inline auto operator==(state const & lhs, state const & rhs)
 }
 
 
-constexpr static auto state_max    = state{255, 75,   fan_speed_max};
-constexpr static auto state_high   = state{80,  65,   195};
-constexpr static auto state_medium = state{70,  55,   160};
+constexpr static auto state_max    = state{255, 71,   fan_speed_max};
+constexpr static auto state_high   = state{80,  61,   195};
+constexpr static auto state_medium = state{70,  51,   160};
 constexpr static auto state_low    = state{60,  45,   125};
 constexpr static auto state_min    = state{50,  -255, fan_speed_min};
 constexpr static auto number_of_states = 5;
