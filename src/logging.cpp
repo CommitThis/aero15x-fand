@@ -35,7 +35,7 @@ auto aero15x::log::set_logger(logger* new_logger) -> void
         new_logger = default_logger();
     }
     auto current = get_logger_holder().load();
-    new_logger->set_log_level(current->get_log_level());
+    // new_logger->set_log_level(current->get_log_level());
     get_logger_holder().exchange(new_logger);
 }
 
@@ -59,6 +59,11 @@ auto do_log(log::level message_level, std::string const & message) -> void
 
 
 using aero15x::log::logger;
+
+logger::logger()
+    : m_level{level::info}
+{}
+
 
 logger::logger(level threshold)
     : m_level{threshold}
