@@ -6,6 +6,11 @@ Copyright © 2020 Commit This Limited
 This project is in no way affiliated with or endorsed by Gigabyte
 Technology.
 
+> Warning: After using the daemon for some time, the bearings wore out on
+> both fans within about a week of each other. While it could have been a
+> coincidence, and they were replaceable, I wouldn't want the trouble myself.
+
+
 This provides a naive implementation of a fan controller for the Aero 15x 
 platform using the embedded controller system. Mostly because I wanted to write
 a `systemd` daemon and I was fed up with relying on the internal fan speed 
